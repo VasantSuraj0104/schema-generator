@@ -245,9 +245,28 @@ function render(data){
   if(!data||data.valid===false){renderError(data&&data.error);return;}
   var types=data.typesGenerated||[];
   typesLine.textContent=types.length?types.join(' \u00b7 '):'output';
-  statusEl.innerHTML=tag('valid','ok')+(data.faqCount?tag('FAQ \u00d7'+data.faqCount):'')+tag(types.length+' entities');
-  warns.innerHTML=(Array.isArray(data.warnings)&&data.warnings.length)?
-    '<div class="warn"><div class="wh">Before you publish</div>'+data.warnings.map(function(w){return '<p>\u203a '+esc(w)+'</p>';}).join('')+'</div>':'';
+
+  var v=data.validation||{};
+  var soTag='';
+  if(v.schemaOrgValid===true)soTag=tag('schema.org \u2713','ok');
+  else if(v.schemaOrgValid===false)soTag=tag('schema.org \u2717','err');
+  var gTag='';
+  if(v.googleEligible===true)gTag=tag('google eligible \u2713','ok');
+  else if(v.googleEligible===false)gTag=tag('google issues','err');
+
+  statusEl.innerHTML=tag('valid','ok')+soTag+gTag+(data.faqCount?tag('FAQ \u00d7'+data.faqCount):'')+tag(types.length+' entities');
+
+  var wparts='';
+  if(Array.isArray(data.warnings)&&data.warnings.length)
+    wparts+='<div class="warn"><div class="wh">Before you publish</div>'+data.warnings.map(function(w){return '<p>\u203a '+esc(w)+'</p>';}).join('')+'</div>';
+  var gIssues=(v.googleIssues||[]);
+  if(gIssues.length)
+    wparts+='<div class="warn"><div class="wh">Validation</div>'+gIssues.map(function(w){return '<p>\u203a '+esc(w)+'</p>';}).join('')+'</div>';
+  var soErr=(v.schemaOrgErrors||[]);
+  if(soErr.length)
+    wparts+='<div class="warn"><div class="wh">Schema.org errors</div>'+soErr.map(function(w){return '<p>\u203a '+esc(w)+'</p>';}).join('')+'</div>';
+  warns.innerHTML=wparts;
+
   var embed=data.embedCode||data.schema||'';
   result.innerHTML='<div class="codewrap"><div class="codebar"><span>application/ld+json</span>'+
     '<button class="copy" id="copyBtn">Copy</button></div><pre>'+hl(embed)+'</pre></div>';
