@@ -27,6 +27,7 @@
     font-family:"Space Grotesk",system-ui,sans-serif;
     -webkit-font-smoothing:antialiased;line-height:1.55;
     min-height:100vh;
+    overflow-x:hidden;
   }
   ::selection{background:#fff;color:#000}
   .mono{font-family:"IBM Plex Mono",monospace}
@@ -49,12 +50,13 @@
   .sub{color:var(--mut);font-size:18px;max-width:560px;margin:26px auto 0}
 
   /* ---------- app ---------- */
-  .app{display:grid;grid-template-columns:1fr 1fr;gap:28px;padding-bottom:96px}
+  .app{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;padding-bottom:96px}
   .card{
     border:1px solid var(--line2);
     background:var(--panel);
     border-radius:16px;
     padding:40px;
+    min-width:0;
   }
   .panehead{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;
     font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--mut);
